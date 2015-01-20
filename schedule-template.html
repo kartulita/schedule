@@ -1,0 +1,9 @@
+<div class="schedule">
+	<div timeline="adapter.timeline" timeline-open-item="methods.openItem(item)"
+		now-playing="nowPlaying" ng-class="timelineClass"></div>
+	<div class="toggle-arrow-container">
+		<div class="toggle-arrow" ng-show="view.canShow" ng-click="methods.toggleViewer()"></div>
+	</div>
+	<div show-viewer="model.showInfo" ng-show="view.showViewer"
+		ng-class="showViewerClass"></div>
+</div>
