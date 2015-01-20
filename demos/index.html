@@ -6,15 +6,8 @@
 <base href="../">
 <!-- ETV stylesheet -->
 <link rel="stylesheet" href="http://etv.err.ee/Content/less/theme/etv/bootstrap.less">
-<!-- CSS for the timeline and show-viewer -->
+<!-- Dependencies -->
 <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
-<link rel="stylesheet/less" href="../timeline/style.less" type="text/css">
-<link rel="stylesheet/less" href="../show-viewer/style.less" type="text/css">
-<!-- CSS for this composite -->
-<link rel="stylesheet/less" href="style.less" type="text/css">
-<!-- Dependencies (remember to `bower install` in the module folder before   -->
-<!-- running this demo                                                       -->
-<script src="bower_components/less/dist/less.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
@@ -23,10 +16,8 @@
 <script src="bower_components/hamsterjs/hamster.js"></script>
 <script src="bower_components/angular-mousewheel/mousewheel.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-<!-- For debugging purposes, I include each script explicitly.               -->
-<!-- In production, you would ng-annotate=>concatenate=>uglify the scripts   -->
-<!-- to produce one small bundle script                                      -->
-<!-- Timeline: -->
+<!-- Timeline -->
+<link rel="stylesheet/less" href="../timeline/style.less" type="text/css">
 <script src="../timeline/module.js"></script>
 <script src="../timeline/timeline-service.js"></script>
 <script src="../timeline/timeline-filters.js"></script>
@@ -35,7 +26,8 @@
 <script src="../timeline/days-directive.js"></script>
 <script src="../timeline/day-directive.js"></script>
 <script src="../timeline/items-directive.js"></script>
-<!-- Show viewer: -->
+<!-- Show viewer -->
+<link rel="stylesheet/less" href="../show-viewer/style.less" type="text/css">
 <script src="../show-viewer/module.js"></script>
 <script src="../show-viewer/show-viewer-directive.js"></script>
 <script src="../show-viewer/show-viewer-filters.js"></script>
@@ -62,18 +54,33 @@
 		});
 </script>
 <!-- Schedule -->
+<link rel="stylesheet/less" href="style.less" type="text/css">
 <script src="module.js"></script>
 <script src="schedule-directive.js"></script>
 <script src="schedule-controller.js"></script>
-<!-- Our demo script -->
+<!-- Apis -->
+<script src="../err/module.js"></script>
+<script src="../err/apis.js"></script>
+<script src="../err/show-viewer-adapter.js"></script>
+<script src="../err/timeline-adapter.js"></script>
+<script src="../err/now-playing-adapter.js"></script>
+<!-- Demo -->
 <script>
 (function (angular) {
 	'use strict';
 
-	angular.module('demo', ['battlesnake.schedule'])
+	angular.module('demo', ['battlesnake.schedule', 'battlesnake.err'])
 		.controller('demoController', demoController);
 
-	function demoController($scope, ERRTimelineAdapterFactory, ERRShowViewerAdapterFactory, ETV_api, R2_api, ERRNowPlayingAdapter, $timeout) {
+	function demoController($scope, $q, $timeout, showViewerAdapterFactory, timelineAdapterFactory, nowPlayingAdapterFactory, scheduleApi) {
+		$scope.adapters = _(scheduleApi).map(function (api, name) {
+			return {
+				name: name,
+				showViewer: showViewerAdapterFactory(api),
+				timeline: timelineAdapterFactory(api),
+				nowPlaying: nowPlayingAdapterFactory(api)
+			};
+		});
 		$scope.model = {
 			title: 'Show viewer demo with timeline binding',
 			showViewer: false,
@@ -82,19 +89,6 @@
 			adapter: null,
 			nowPlaying: null
 		};
-		$scope.adapters = [
-			{
-				name: 'ETV',
-				timeline: ERRTimelineAdapterFactory(ETV_api),
-				showViewer: ERRShowViewerAdapterFactory(ETV_api)
-			},
-			{
-				name: 'R2',
-				timeline: ERRTimelineAdapterFactory(R2_api),
-				showViewer: ERRShowViewerAdapterFactory(R2_api),
-				nowPlaying: ERRNowPlayingAdapter(R2_api, 'raadio2')
-			}
-		];
 		$scope.model.adapter = $scope.adapters[0];
 		$scope.openItem = openItem;
 		$scope.changeChannel = changeChannel;
@@ -144,10 +138,6 @@
 
 })(window.angular);
 </script>
-<script src="demos/err-api.js"></script>
-<script src="../show-viewer/demos/err-show-viewer-adapter.js"></script>
-<script src="../timeline/demos/err-now-playing-adapter.js"></script>
-<script src="../timeline/demos/err-timeline-adapter.js"></script>
 <style>
 body {
 	font-family: sans-serif;
@@ -197,4 +187,5 @@ body {
 	</p>
 </div>
 </body>
+<script src="bower_components/less/dist/less.min.js"></script>
 </html>
