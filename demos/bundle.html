@@ -16,54 +16,9 @@
 <script src="bower_components/hamsterjs/hamster.js"></script>
 <script src="bower_components/angular-mousewheel/mousewheel.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-<!-- Timeline -->
-<link rel="stylesheet/less" href="../timeline/style.less" type="text/css">
-<script src="../timeline/module.js"></script>
-<script src="../timeline/timeline-service.js"></script>
-<script src="../timeline/timeline-filters.js"></script>
-<script src="../timeline/timeline-controller.js"></script>
-<script src="../timeline/timeline-directive.js"></script>
-<script src="../timeline/days-directive.js"></script>
-<script src="../timeline/day-directive.js"></script>
-<script src="../timeline/items-directive.js"></script>
-<!-- Show viewer -->
-<link rel="stylesheet/less" href="../show-viewer/style.less" type="text/css">
-<script src="../show-viewer/module.js"></script>
-<script src="../show-viewer/show-viewer-directive.js"></script>
-<script src="../show-viewer/show-viewer-filters.js"></script>
-<!-- Templates -->
-<script>
-	/*
-	 * These synchronous template GET is not required if you use the bundled form
-	 * of the timeline plugin
-	 */
-	angular.module('battlesnake.timeline')
-		.run(function ($templateCache) {
-			var templates = [
-				'timeline',
-				'show-viewer'
-			];
-			templates.forEach(function (template) {
-				var xhr = new XMLHttpRequest();
-				var name = template + '-template.html';
-				var path = '../' + template + '/' + name;
-				xhr.open('GET', path, false);
-				xhr.send();
-				$templateCache.put(name, xhr.responseText);
-			});
-		});
-</script>
-<!-- Schedule -->
-<link rel="stylesheet/less" href="style.less" type="text/css">
-<script src="module.js"></script>
-<script src="schedule-directive.js"></script>
-<script src="schedule-controller.js"></script>
-<!-- Apis -->
-<script src="../err/module.js"></script>
-<script src="../err/apis.js"></script>
-<script src="../err/show-viewer-adapter.js"></script>
-<script src="../err/timeline-adapter.js"></script>
-<script src="../err/now-playing-adapter.js"></script>
+<!-- Bundle -->
+<script src="../../out/min/bundle.js"></script>
+<link rel="stylesheet" href="../../out/min/bundle.css">
 <!-- Demo -->
 <script>
 (function (angular) {
