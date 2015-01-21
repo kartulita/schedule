@@ -1,9 +1,9 @@
 <div class="schedule">
-	<div timeline="adapter.timeline" timeline-open-item="methods.openItem(item)"
+	<div timeline="adapter.timeline" timeline-open-item="methods.openItem(item.itemData)"
 		now-playing="nowPlaying" ng-class="timelineClass"></div>
 	<div class="toggle-arrow-container">
-		<div class="toggle-arrow" ng-show="view.canShow" ng-click="methods.toggleViewer()"></div>
+		<div class="toggle-arrow" ng-show="!!model.details" ng-click="methods.toggleViewer()"></div>
 	</div>
-	<div show-viewer="model.showInfo" ng-show="view.showViewer"
+	<div show-viewer="model.details" ng-show="!!model.details && expanded"
 		ng-class="showViewerClass"></div>
 </div>

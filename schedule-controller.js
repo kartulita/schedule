@@ -6,35 +6,39 @@
 
 	function scheduleController($scope) {
 		$scope.model = {
-			selectedItem: null,
-			showInfo: null
+			details: null,
 		};
-		$scope.view = {
-			canShowViewer: false,
-			showViewer: false,
-		};
+
 		$scope.methods = {
 			openItem: openItem,
 			toggleViewer: toggleViewer
 		};
+
+		$scope.$watch('selectedItem', selectionChanged);
 		return;
 
-		function openItem(item) {
-			if ($scope.view.selectedItem === item) {
+		function selectionChanged() {
+			openItem($scope.selectedItem, true);
+		}
+
+		function openItem(item, forceOpen) {
+			if ($scope.selectedItem === item && !forceOpen) {
 				toggleViewer();
 				return;
 			}
-			$scope.model.selectedItem = item;
-			return $scope.adapter.showViewer.getDetails(item.itemData)
+			$scope.selectedItem = item;
+			if (!item) {
+				return;
+			}
+			return $scope.adapter.showViewer.getDetails(item)
 				.then(function (details) {
-					$scope.view.canShow = true;
-					$scope.view.showViewer = true;
-					$scope.model.showInfo = details;
+					$scope.expanded = true;
+					$scope.model.details = details;
 				});
 		}
 
 		function toggleViewer() {
-			$scope.view.showViewer = $scope.view.showViewer;
+			$scope.model.isOpen = !$scope.model.isOpen;
 		}
 	}
 

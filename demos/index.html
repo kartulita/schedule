@@ -72,7 +72,7 @@
 	angular.module('demo', ['battlesnake.schedule', 'battlesnake.err'])
 		.controller('demoController', demoController);
 
-	function demoController($scope, $q, $timeout, showViewerAdapterFactory, timelineAdapterFactory, nowPlayingAdapterFactory, scheduleApi) {
+	function demoController($scope, $q, $timeout, $window, showViewerAdapterFactory, timelineAdapterFactory, nowPlayingAdapterFactory, scheduleApi) {
 		$scope.adapters = _(scheduleApi).map(function (api, name) {
 			return {
 				name: name,
@@ -83,37 +83,32 @@
 		});
 		$scope.model = {
 			title: 'Show viewer demo with timeline binding',
-			showViewer: false,
-			show: null,
-			lastItem: null,
 			adapter: null,
-			nowPlaying: null
+			nowPlaying: null,
+			expanded: false,
+			item: null
 		};
 		$scope.model.adapter = $scope.adapters[0];
-		$scope.openItem = openItem;
 		$scope.changeChannel = changeChannel;
 		var nowPlayingTimer = null;
 		changeChannel();
+		var query = _($window.location.search.substr(1).split('&')).chain()
+			.map(function (kv) {
+				var eq = kv.indexOf('=');
+				return eq === -1 ? [kv, true] : [kv.substr(0, eq), kv.substr(eq + 1)];
+			})
+			.object()
+			.value();
+		if (query.channel) {
+			$scope.model.adapter = _($scope.adapters)
+				.findWhere({ name: query.channel }) || $scope.model.adapter;
+		}
+		if (query.showlive) {
+			showCurrent();
+		}
 		return;
 		
-		function openItem(item) {
-			/* Toggling */
-			if ($scope.model.lastItem === item) {
-				$scope.model.showViewer = !$scope.model.showViewer;
-				return;
-			}
-			$scope.model.lastItem = item;
-			/* Get details */
-			return $scope.model.adapter.showViewer.getDetails(item.itemData)
-				.then(function (showDetails) {
-					$scope.model.showViewer = true;
-					$scope.model.show = showDetails;
-				});
-		}
-
 		function changeChannel() {
-			$scope.model.lastItem = null;
-			$scope.model.showViewer = false;
 			$scope.model.show = null;
 			$timeout.cancel(nowPlayingTimer);
 			updateNowPlaying();
@@ -132,6 +127,31 @@
 				var changed = $scope.model.nowPlaying !== result;
 				$scope.model.nowPlaying = result;
 				nowPlayingTimer = $timeout(updateNowPlaying, changed ? 30000 : 5000);
+			}
+		}
+
+		function showCurrent() {
+			$scope.model.adapter.timeline.getDay(moment())
+				.then(getCurrent)
+				.then(function selectShow(show) {
+					$scope.model.item = show.itemData;
+					$scope.model.expanded = true;
+					console.log('showlive', show);
+				});
+				
+			function getCurrent(data) {
+				return _(data).chain()
+					.sort(showReverseComparator)
+					.find(hasStartedPredicate)
+					.value();
+					
+				function showReverseComparator(a, b) {
+					return -a.start.diff(b.start);
+				}
+
+				function hasStartedPredicate(show) {
+					return show.start.isBefore(moment());
+				}
 			}
 		}
 	}
@@ -173,7 +193,9 @@ body {
 			<select ng-options="adapter as adapter.name for adapter in adapters" ng-model="model.adapter" ng-change="changeChannel()"></select>
 		</div>
 	</div>
-	<div schedule="model.adapter" class="schedule kartulita" show-viewer-class="container"></div>
+	<div schedule="model.adapter" class="schedule kartulita"
+		expanded="model.expanded" selected-item="model.item"
+		timeline-class="" show-viewer-class="container"></div>
 	<!-- That's all there is to it! -->
 </div>
 <div>

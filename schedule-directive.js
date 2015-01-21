@@ -10,9 +10,11 @@
 			require: 'schedule',
 			scope: {
 				adapter: '=schedule',
-				nowPlaying: '=nowPlaying',
+				nowPlaying: '=',
 				timelineClass: '@',
-				showViewerClass: '@'
+				showViewerClass: '@',
+				expanded: '=?',
+				selectedItem: '=?'
 			},
 			templateUrl: 'schedule-template.html',
 			controller: 'scheduleController'
