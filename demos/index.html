@@ -16,9 +16,19 @@
 <script src="bower_components/hamsterjs/hamster.js"></script>
 <script src="bower_components/angular-mousewheel/mousewheel.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<!-- Language -->
+<script src="../language/module.js"></script>
+<script src="../language/language-service.js"></script>
+<!-- Apis -->
+<script src="../err/module.js"></script>
+<script src="../err/apis.js"></script>
+<script src="../err/show-viewer-adapter.js"></script>
+<script src="../err/timeline-adapter.js"></script>
+<script src="../err/now-playing-adapter.js"></script>
 <!-- Timeline -->
 <link rel="stylesheet/less" href="../timeline/style.less" type="text/css">
 <script src="../timeline/module.js"></script>
+<script src="../timeline/timeline-locale.js"></script>
 <script src="../timeline/timeline-service.js"></script>
 <script src="../timeline/timeline-filters.js"></script>
 <script src="../timeline/timeline-controller.js"></script>
@@ -29,6 +39,7 @@
 <!-- Show viewer -->
 <link rel="stylesheet/less" href="../show-viewer/style.less" type="text/css">
 <script src="../show-viewer/module.js"></script>
+<script src="../show-viewer/show-viewer-locale.js"></script>
 <script src="../show-viewer/show-viewer-directive.js"></script>
 <script src="../show-viewer/show-viewer-filters.js"></script>
 <!-- Templates -->
@@ -58,12 +69,6 @@
 <script src="module.js"></script>
 <script src="schedule-directive.js"></script>
 <script src="schedule-controller.js"></script>
-<!-- Apis -->
-<script src="../err/module.js"></script>
-<script src="../err/apis.js"></script>
-<script src="../err/show-viewer-adapter.js"></script>
-<script src="../err/timeline-adapter.js"></script>
-<script src="../err/now-playing-adapter.js"></script>
 <!-- Demo -->
 <script>
 (function (angular) {
@@ -119,13 +124,18 @@
 			if (!adapter.nowPlaying) {
 				return;
 			}
-			adapter.nowPlaying(showNowPlaying);
+			adapter.nowPlaying()
+				.then(function parseResponse(res) {
+					return (res.data || '').replace(/^[\r\n\s]+|[\r\n\s]+$|^null$/gi, '');
+				}, function clearValue() {
+					return '';
+				})
+				.then(showNowPlaying);
 			return;
 
-			function showNowPlaying(result) {
-				result = result.replace(/^\s+|\s+$|^null$/gi, '');
-				var changed = $scope.model.nowPlaying !== result;
-				$scope.model.nowPlaying = result;
+			function showNowPlaying(value) {
+				var changed = $scope.model.nowPlaying !== value;
+				$scope.model.nowPlaying = value;
 				nowPlayingTimer = $timeout(updateNowPlaying, changed ? 30000 : 5000);
 			}
 		}
@@ -194,7 +204,8 @@ body {
 	</div>
 	<div schedule="model.adapter" class="schedule kartulita"
 		expanded="model.expanded" selected-item="model.item"
-		timeline-class="" show-viewer-class="container"></div>
+		timeline-class="" show-viewer-class="container"
+		now-playing="model.nowPlaying"></div>
 	<!-- That's all there is to it! -->
 </div>
 <div>
