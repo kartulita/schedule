@@ -126,7 +126,12 @@
 			}
 			adapter.nowPlaying()
 				.then(function parseResponse(res) {
-					return (res.data || '').replace(/^[\r\n\s]+|[\r\n\s]+$|^null$/gi, '');
+					var data = res.data || '""';
+					try {
+						data = JSON.parse(data);
+					} catch (e) {
+					}
+					return data.replace(/^\s+|\s+$/g, '');
 				}, function clearValue() {
 					return '';
 				})
