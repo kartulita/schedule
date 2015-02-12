@@ -6,7 +6,7 @@
 
 	function scheduleController($scope) {
 		$scope.model = {
-			details: null,
+			details: null
 		};
 
 		$scope.methods = {
@@ -38,7 +38,7 @@
 		}
 
 		function toggleViewer() {
-			$scope.model.isOpen = !$scope.model.isOpen;
+			$scope.expanded = !$scope.expanded;
 		}
 	}
 
