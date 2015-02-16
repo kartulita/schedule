@@ -21,6 +21,7 @@
 <script src="../language/language-service.js"></script>
 <!-- Apis -->
 <script src="../err/module.js"></script>
+<script src="../err/locale.js"></script>
 <script src="../err/apis.js"></script>
 <script src="../err/show-viewer-adapter.js"></script>
 <script src="../err/timeline-adapter.js"></script>
@@ -98,7 +99,7 @@
 			expanded: false,
 			item: null
 		};
-		$scope.model.adapter = $scope.adapters[0];
+		$scope.model.adapter = _($scope.adapters).findWhere({ name: window.location.hash.substr(1) }) || $scope.adapters[0];
 		$scope.changeChannel = changeChannel;
 		var nowPlayingTimer = null;
 		changeChannel();
@@ -119,6 +120,7 @@
 		return;
 		
 		function changeChannel() {
+			window.location.hash = $scope.model.adapter.name;
 			$scope.model.show = null;
 			$timeout.cancel(nowPlayingTimer);
 			updateNowPlaying();
