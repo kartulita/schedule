@@ -20,6 +20,8 @@
 <script src="bower_components/hamsterjs/hamster.js"></script>
 <script src="bower_components/angular-mousewheel/mousewheel.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<!-- AJAX proxy for demos only -->
+<script src="../ajax-proxy/client.js"></script>
 <!-- Language -->
 <script src="../language/module.js"></script>
 <script src="../language/language-service.js"></script>
@@ -88,7 +90,7 @@
 (function (angular) {
 	'use strict';
 
-	angular.module('demo', ['battlesnake.schedule', 'battlesnake.err'])
+	angular.module('demo', ['battlesnake.schedule', 'battlesnake.err', 'battlesnake.ajax-proxy'])
 		.controller('demoController', demoController);
 
 	function demoController($scope, $q, $timeout, $window, showViewerAdapterFactory, timelineAdapterFactory, nowPlayingAdapterFactory, scheduleApi) {
