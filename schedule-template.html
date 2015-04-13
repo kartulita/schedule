@@ -1,10 +1,13 @@
-<div class="schedule full-width container">
-	<div timeline="adapter.timeline" timeline-open-item="methods.openItem(item.itemData)"
-		now-playing="nowPlaying" ng-class="timelineClass"></div>
+<div class="schedule container" ng-class="{ 'full-width': fullWidth }">
+	<div now-playing="adapter.nowPlaying" ng-if="adapter.nowPlaying"
+		ng-class="nowPlayingClass + (fullWidth ? ' full-width' : '')"></div>
+	<div timeline="adapter.timeline" ng-if="adapter.timeline"
+		timeline-open-item="methods.openItem(item.itemData)"
+		ng-class="timelineClass + (fullWidth ? ' full-width' : '')"></div>
 	<div class="toggle-arrow-container">
 		<div class="toggle-arrow" ng-show="!!model.details" ng-click="methods.toggleViewer()"></div>
 	</div>
-	<div show-viewer="model.details"
+	<div show-viewer="model.details" ng-if="adapter.showViewer"
 		can-show-playlist="adapter.showViewer.canShowPlaylist"
 		show-times-in-playlist="adapter.showViewer.showTimesInPlaylist"
 		ng-show="!!model.details && expanded"

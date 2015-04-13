@@ -15,7 +15,13 @@
 		};
 
 		$scope.$watch('selectedItem', selectionChanged);
+		$scope.$watch('adapter', adapterChanged);
 		return;
+
+		function adapterChanged() {
+			$scope.model.details = null;
+			$scope.expanded = false;
+		}
 
 		function selectionChanged() {
 			openItem($scope.selectedItem, true);

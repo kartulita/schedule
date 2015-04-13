@@ -38,6 +38,11 @@
 <script src="../date-picker/module.js"></script>
 <script src="../date-picker/datepicker-locale.js"></script>
 <script src="../date-picker/datepicker-directive.js"></script>
+<!-- Now playing -->
+<link rel="stylesheet/less" href="../now-playing/style.less" type="text/css">
+<script src="../now-playing/module.js"></script>
+<script src="../now-playing/now-playing-controller.js"></script>
+<script src="../now-playing/now-playing-directive.js"></script>
 <!-- Timeline -->
 <link rel="stylesheet/less" href="../timeline/style.less" type="text/css">
 <script src="../timeline/module.js"></script>
@@ -60,15 +65,21 @@
 <script src="../show-viewer/show-viewer-controller.js"></script>
 <script src="../show-viewer/show-viewer-directive.js"></script>
 <script src="../show-viewer/show-viewer-filters.js"></script>
+<!-- Schedule -->
+<link rel="stylesheet/less" href="style.less" type="text/css">
+<script src="module.js"></script>
+<script src="schedule-directive.js"></script>
+<script src="schedule-controller.js"></script>
 <!-- Templates -->
 <script>
 	/*
 	 * These synchronous template GET is not required if you use the bundled form
 	 * of the timeline plugin
 	 */
-	angular.module('battlesnake.timeline')
+	angular.module('battlesnake.schedule')
 		.run(function ($templateCache) {
 			var templates = [
+				'now-playing',
 				'timeline',
 				'show-viewer'
 			];
@@ -82,11 +93,6 @@
 			});
 		});
 </script>
-<!-- Schedule -->
-<link rel="stylesheet/less" href="style.less" type="text/css">
-<script src="module.js"></script>
-<script src="schedule-directive.js"></script>
-<script src="schedule-controller.js"></script>
 <!-- Demo -->
 <script>
 (function (angular) {
@@ -107,13 +113,11 @@
 		$scope.model = {
 			title: 'Show viewer demo with timeline binding',
 			adapter: null,
-			nowPlaying: null,
 			expanded: false,
 			item: null
 		};
 		$scope.model.adapter = _($scope.adapters).findWhere({ name: window.location.hash.substr(1) }) || $scope.adapters[0];
 		$scope.changeChannel = changeChannel;
-		var nowPlayingTimer = null;
 		changeChannel();
 		var query = _($window.location.search.substr(1).split('&')).chain()
 			.map(function (kv) {
@@ -134,34 +138,6 @@
 		function changeChannel() {
 			window.location.hash = $scope.model.adapter.name;
 			$scope.model.show = null;
-			$timeout.cancel(nowPlayingTimer);
-			updateNowPlaying();
-		}
-
-		function updateNowPlaying() {
-			var adapter = $scope.model.adapter;
-			if (!adapter.nowPlaying) {
-				return;
-			}
-			adapter.nowPlaying()
-				.then(function parseResponse(res) {
-					var data = res.data || '""';
-					try {
-						data = JSON.parse(data);
-					} catch (e) {
-					}
-					return data.replace(/^\s+|\s+$/g, '');
-				}, function clearValue() {
-					return '';
-				})
-				.then(showNowPlaying);
-			return;
-
-			function showNowPlaying(value) {
-				var changed = $scope.model.nowPlaying !== value;
-				$scope.model.nowPlaying = value;
-				nowPlayingTimer = $timeout(updateNowPlaying, changed ? 30000 : 5000);
-			}
 		}
 
 		function showCurrent() {
@@ -233,7 +209,7 @@ body {
 	<!-- Here we go -->
 	<div schedule="model.adapter" class="schedule kartulita"
 		expanded="model.expanded" selected-item="model.item"
-		now-playing="model.nowPlaying"></div>
+		full-width="true"></div>
 	<!-- That's all there is to it! -->
 </div>
 </body>
