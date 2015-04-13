@@ -7,9 +7,9 @@
 	<div class="toggle-arrow-container">
 		<div class="toggle-arrow" ng-show="!!model.details" ng-click="methods.toggleViewer()"></div>
 	</div>
-	<div show-viewer="model.details" ng-if="adapter.showViewer"
+	<div show-viewer="model.details"
+		ng-if="adapter.showViewer && !!model.details && expanded"
 		can-show-playlist="adapter.showViewer.canShowPlaylist"
 		show-times-in-playlist="adapter.showViewer.showTimesInPlaylist"
-		ng-show="!!model.details && expanded"
 		ng-class="showViewerClass" class="container"></div>
 </div>
