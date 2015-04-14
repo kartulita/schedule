@@ -51,12 +51,12 @@
 <script src="../timeline/timeline-filters.js"></script>
 <script src="../timeline/timeline-controller.js"></script>
 <script src="../timeline/timeline-animator.js"></script>
-<script src="../timeline/days-controller.js"></script>
-<script src="../timeline/day-controller.js"></script>
+<script src="../timeline/groups-controller.js"></script>
+<script src="../timeline/group-controller.js"></script>
 <script src="../timeline/items-controller.js"></script>
 <script src="../timeline/timeline-directive.js"></script>
-<script src="../timeline/days-directive.js"></script>
-<script src="../timeline/day-directive.js"></script>
+<script src="../timeline/groups-directive.js"></script>
+<script src="../timeline/group-directive.js"></script>
 <script src="../timeline/items-directive.js"></script>
 <!-- Show viewer -->
 <link rel="stylesheet/less" href="../show-viewer/style.less" type="text/css">
@@ -141,7 +141,7 @@
 		}
 
 		function showCurrent() {
-			$scope.model.adapter.timeline.getDay(moment())
+			$scope.model.adapter.timeline.getGroup(moment())
 				.then(getCurrent)
 				.then(function selectShow(show) {
 					$scope.model.item = show.itemData;
