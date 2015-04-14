@@ -27,6 +27,7 @@
     "less": "~2.2.0"
   },
   "devDependencies": {
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "less": "~2.5.0"
   }
 }
