@@ -15,7 +15,8 @@
 				showViewerClass: '@',
 				expanded: '=?',
 				selectedItem: '=?',
-				fullWidth: '@'
+				fullWidth: '@',
+				groupBy: '@'
 			},
 			templateUrl: 'schedule-template.html',
 			controller: 'scheduleController'
